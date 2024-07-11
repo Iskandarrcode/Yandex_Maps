@@ -19,6 +19,7 @@ class _YandexMapScreenState extends State<YandexMapScreen> {
   final _searchController = TextEditingController();
   List<MapObject>? polylines;
   List _suggestionList = [];
+  List<PlacemarkMapObject> makers = [];
 
   Point myCurrentLocation = const Point(
     latitude: 41.2856806,
@@ -49,12 +50,12 @@ class _YandexMapScreenState extends State<YandexMapScreen> {
     bool finished,
   ) async {
     myCurrentLocation = position.target;
-    if (finished) {
-      polylines = await YandexMapServices.getDirection(
-        najotTalim,
-        myCurrentLocation,
-      );
-    }
+    // if (finished) {
+    //   polylines = await YandexMapService.getDirection(
+    //     najotTalim,
+    //     myCurrentLocation,
+    //   );
+    // }
   }
 
   Point? myLocation;
@@ -99,12 +100,38 @@ class _YandexMapScreenState extends State<YandexMapScreen> {
         children: [
           YandexMap(
             onMapLongTap: (argument) async {
-              polylines = await YandexMapServices.getDirection(
-                myCurrentLocation,
-                argument,
-              );
               print("+++++++++++++++++++++");
-              print(polylines);
+              if (makers.length < 2) {
+                makers.add(
+                  PlacemarkMapObject(
+                    mapId: MapObjectId(UniqueKey().toString()),
+                    point: Point(
+                      latitude: argument.latitude,
+                      longitude: argument.longitude,
+                    ),
+                    icon: PlacemarkIcon.single(
+                      PlacemarkIconStyle(
+                        image: BitmapDescriptor.fromAssetImage(
+                          "assets/route_start.png",
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+
+                if (makers.length == 2) {
+                  print("---------------------------------");
+
+                  polylines = await YandexMapServices.getDirection(
+                    makers.first.point,
+                    makers.last.point,
+                  );
+                  print(polylines);
+                }
+              } else {
+                makers.clear();
+                polylines!.clear();
+              }
               setState(() {});
             },
             onMapCreated: onMapCreated,
@@ -122,6 +149,7 @@ class _YandexMapScreenState extends State<YandexMapScreen> {
                   ),
                 ),
               ),
+              ...makers,
               ...?polylines,
               // PolylineMapObject(
               //   mapId: const MapObjectId("birinchiJoy"),

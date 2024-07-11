@@ -5,14 +5,14 @@ import 'package:yandex_mapkit/yandex_mapkit.dart';
 class YandexMapServices {
   static Future<List<MapObject>> getDirection(
     Point from,
-    to,
+    Point to,
   ) async {
     final result = await YandexDriving.requestRoutes(
       points: [
         RequestPoint(point: from, requestPointType: RequestPointType.wayPoint),
         RequestPoint(point: to, requestPointType: RequestPointType.wayPoint),
       ],
-      drivingOptions: const DrivingOptions(
+      drivingOptions: DrivingOptions(
         initialAzimuth: 1,
         routesCount: 1,
         avoidTolls: true,
@@ -25,16 +25,14 @@ class YandexMapServices {
       print("Joylashuv olinmadi");
       return [];
     }
-      print("Joylashuv olinmadsjhdgegcrhyjegchjfrghcgfrchjgfrhgcgrhjgchjgfrci");
 
-    final points = drivingResults.routes!.map(
-      (route) {
-        return PolylineMapObject(
-          mapId: MapObjectId(UniqueKey().toString()),
-          polyline: route.geometry,
-        );
-      },
-    ).toList();
+    final points = drivingResults.routes!.map((route) {
+      return PolylineMapObject(
+        mapId: MapObjectId(UniqueKey().toString()),
+        polyline: route.geometry,
+      );
+    }).toList();
+
     return points;
   }
 
