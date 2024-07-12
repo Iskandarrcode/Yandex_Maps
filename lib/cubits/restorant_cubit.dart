@@ -1,7 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:dars9/cubits/restorant_state.dart';
 import 'package:dars9/data/models/restorant_model.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:yandex_mapkit/yandex_mapkit.dart';
 
 class RestorantCubit extends Cubit<RestorantState> {
